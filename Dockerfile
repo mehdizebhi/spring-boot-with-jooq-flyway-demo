@@ -5,7 +5,7 @@ FROM eclipse-temurin:17-jdk
 WORKDIR /app
 
 # Copy the packaged JAR file into the container
-COPY target/jooq-with-flyway-migration-demo-0.0.1-SNAPSHOT.jar /app/app.jar
+COPY target/jooq-with-flyway-migration-demo.jar /app/app.jar
 
 # Expose the port that your Spring Boot application will run on
 EXPOSE 8080
