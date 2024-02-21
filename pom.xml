@@ -20,7 +20,7 @@
         <java.version>17</java.version>
         <jooq.version>3.19.3</jooq.version>
         <postgresql.jdbc.version>42.7.1</postgresql.jdbc.version>
-        <flyway.version>10.7.1</flyway.version>
+        <flyway.version>10.8.1</flyway.version>
     </properties>
 
     <dependencies>
@@ -106,11 +106,11 @@
                     <outOfOrder>true</outOfOrder>
                     <cleanDisabled>true</cleanDisabled>
                     <driver>org.postgresql.Driver</driver>
-                    <url>${spring.datasource.url}</url>
-                    <user>${spring.datasource.username}</user>
-                    <password>${spring.datasource.password}</password>
+                    <url>${db.url}</url>
+                    <user>${db.username}</user>
+                    <password>${db.password}</password>
                     <schemas>
-                        <schema>${spring.datasource.name}</schema>
+                        <schema>${db.schema}</schema>
                     </schemas>
                     <locations>
                         <location>filesystem:src/main/resources/db/migration</location>
@@ -166,9 +166,9 @@
                 <configuration>
                     <jdbc>
                         <driver>org.postgresql.Driver</driver>
-                        <url>${spring.datasource.url}</url>
-                        <user>${spring.datasource.username}</user>
-                        <password>${spring.datasource.password}</password>
+                        <url>${db.url}</url>
+                        <user>${db.username}</user>
+                        <password>${db.password}</password>
                     </jdbc>
 
                     <generator>
@@ -176,7 +176,7 @@
                             <name>org.jooq.meta.postgres.PostgresDatabase</name>
                             <includes>.*</includes>
                             <excludes/>
-                            <inputSchema>${spring.datasource.name}</inputSchema>
+                            <inputSchema>${db.schema}</inputSchema>
                         </database>
                         <target>
                             <!-- The destination package of your generated classes (within the destination directory) -->
