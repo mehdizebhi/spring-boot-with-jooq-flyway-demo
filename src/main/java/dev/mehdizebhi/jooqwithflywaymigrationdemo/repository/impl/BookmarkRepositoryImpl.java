@@ -1,0 +1,8 @@
+package dev.mehdizebhi.jooqwithflywaymigrationdemo.repository.impl;
+
+import org.springframework.stereotype.Repository;
+
+@Repository
+public class BookmarkRepositoryImpl {
+
+}

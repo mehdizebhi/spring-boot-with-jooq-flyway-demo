@@ -9,24 +9,21 @@ import org.jooq.impl.DSL;
 import org.jooq.impl.DataSourceConnectionProvider;
 import org.jooq.impl.DefaultConfiguration;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import javax.sql.DataSource;
 
 @Configuration
 public class DataSourceConfig {
 
     private HikariDataSource dataSource;
 
-    @Value("${db.url}")
+    @Value("${spring.datasource.url}")
     private String datasourceUrl;
 
-    @Value("${db.username}")
+    @Value("${spring.datasource.username}")
     private String datasourceUsername;
 
-    @Value("${db.password}")
+    @Value("${spring.datasource.password}")
     private String datasourcePassword;
 
     private void initDataSource() {
@@ -50,13 +47,25 @@ public class DataSourceConfig {
 
         Settings settings = new Settings()
                 .withAttachRecords(false)
-                .withExecuteLogging(false);
+                .withExecuteLogging(true);
 
         org.jooq.Configuration conf = new DefaultConfiguration()
-                .set(SQLDialect.POSTGRES)
+                .set(SQLDialect.MYSQL)
                 .set(new DataSourceConnectionProvider(dataSource))
                 .set(settings);
 
         return DSL.using(conf);
     }
+
+    /*@Bean
+    public Flyway flyway() {
+        Flyway flyway = Flyway.configure()
+                .dataSource(datasourceUrl, datasourceUsername, datasourcePassword)
+                .locations("db/migration")
+                .load();
+
+        flyway.migrate();
+
+        return flyway;
+    }*/
 }

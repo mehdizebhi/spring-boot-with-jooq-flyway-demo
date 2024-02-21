@@ -19,42 +19,41 @@
     <properties>
         <java.version>17</java.version>
         <jooq.version>3.19.3</jooq.version>
-        <postgresql.jdbc.version>42.7.1</postgresql.jdbc.version>
         <flyway.version>10.8.1</flyway.version>
+        <mysql.jdbc.version>8.0.30</mysql.jdbc.version>
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
+        <!-- DB -->
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
         </dependency>
-
-        <!-- DB -->
         <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <scope>runtime</scope>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-mysql</artifactId>
+            <version>${flyway.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jooq</artifactId>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>5.1.0</version>
         </dependency>
-
         <dependency>
-            <groupId>org.hibernate.validator</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>6.1.7.Final</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jooq</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -64,9 +63,7 @@
 
     <build>
         <finalName>${project.artifactId}</finalName>
-
         <plugins>
-
             <!-- Read from application.properties the DB configuration -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -103,14 +100,15 @@
                 </executions>
 
                 <configuration>
+                    <initSql>SET default_storage_engine=InnoDB;</initSql>
                     <outOfOrder>true</outOfOrder>
                     <cleanDisabled>true</cleanDisabled>
-                    <driver>org.postgresql.Driver</driver>
-                    <url>${db.url}</url>
-                    <user>${db.username}</user>
-                    <password>${db.password}</password>
+                    <driver>${spring.datasource.driver-class-name}</driver>
+                    <url>${spring.datasource.url}</url>
+                    <user>${spring.datasource.username}</user>
+                    <password>${spring.datasource.password}</password>
                     <schemas>
-                        <schema>${db.schema}</schema>
+                        <schema>${spring.datasource.name}</schema>
                     </schemas>
                     <locations>
                         <location>filesystem:src/main/resources/db/migration</location>
@@ -119,12 +117,11 @@
                 <dependencies>
                     <dependency>
                         <groupId>org.flywaydb</groupId>
-                        <artifactId>flyway-database-postgresql</artifactId>
+                        <artifactId>flyway-mysql</artifactId>
                         <version>${flyway.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
-
 
             <!-- JOOQ Code Generator Plugin -->
             <plugin>
@@ -155,9 +152,9 @@
                         <version>${jooq.version}</version>
                     </dependency>
                     <dependency>
-                        <groupId>org.postgresql</groupId>
-                        <artifactId>postgresql</artifactId>
-                        <version>${postgresql.jdbc.version}</version>
+                        <groupId>mysql</groupId>
+                        <artifactId>mysql-connector-java</artifactId>
+                        <version>${mysql.jdbc.version}</version>
                     </dependency>
                 </dependencies>
 
@@ -165,18 +162,18 @@
                 http://www.jooq.org/doc/3.5/manual/code-generation/codegen-advanced/ -->
                 <configuration>
                     <jdbc>
-                        <driver>org.postgresql.Driver</driver>
-                        <url>${db.url}</url>
-                        <user>${db.username}</user>
-                        <password>${db.password}</password>
+                        <driver>${spring.datasource.driver-class-name}</driver>
+                        <url>${spring.datasource.url}</url>
+                        <user>${spring.datasource.username}</user>
+                        <password>${spring.datasource.password}</password>
                     </jdbc>
 
                     <generator>
                         <database>
-                            <name>org.jooq.meta.postgres.PostgresDatabase</name>
+                            <name>org.jooq.meta.mysql.MySQLDatabase</name>
                             <includes>.*</includes>
                             <excludes/>
-                            <inputSchema>${db.schema}</inputSchema>
+                            <inputSchema>${spring.datasource.name}</inputSchema>
                         </database>
                         <target>
                             <!-- The destination package of your generated classes (within the destination directory) -->
@@ -187,14 +184,11 @@
                         </target>
                     </generator>
                 </configuration>
-
             </plugin>
-
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-
         </plugins>
     </build>
 
