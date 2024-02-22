@@ -1,17 +1,16 @@
 version: '3'
 
 services:
-  # MySQL service
-  mysql-db:
-    image: mysql:latest
-    container_name: mysql-container
+  # PostgreSQL service
+  postgres-db:
+    image: postgres:latest
+    container_name: postgres-container
     environment:
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: 123
-      MYSQL_DATABASE: jooq_test
-      MYSQL_ROOT_PASSWORD: 123
+      POSTGRES_DB: jooq_test
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 123
     ports:
-      - "3306:3306"
+      - "5432:5432"
 
   # Spring Boot application service
   spring-app:
@@ -22,9 +21,9 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - mysql-db
+      - postgres-db
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/jooq_test
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/jooq_test
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: 123
       SPRING_DATASOURCE_NAME: jooq_test

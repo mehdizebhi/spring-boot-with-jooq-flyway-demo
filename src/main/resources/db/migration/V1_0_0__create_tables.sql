@@ -1,45 +1,50 @@
 CREATE TABLE user_preferences
 (
-    id         INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    theme      VARCHAR(255),
-    language   VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    id         bigserial primary key,
+    theme      varchar(255),
+    language   varchar(255),
+    created_at timestamp with time zone default CURRENT_TIMESTAMP,
+    updated_at timestamp with time zone
 );
 
 CREATE TABLE users
 (
-    id             INT          NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    name           VARCHAR(255) NOT NULL,
-    email          VARCHAR(255) NOT NULL,
-    password       VARCHAR(255) NOT NULL,
-    preferences_id INT REFERENCES user_preferences (id),
-    created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    id             bigserial primary key,
+    name           varchar(255) not null,
+    email          varchar(255) not null,
+    password       varchar(255) not null,
+    preferences_id bigint REFERENCES user_preferences (id),
+    created_at     timestamp with time zone default CURRENT_TIMESTAMP,
+    updated_at     timestamp with time zone,
     CONSTRAINT user_email_unique UNIQUE (email)
 );
 
 CREATE TABLE bookmarks
 (
-    id         INT           NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    url        VARCHAR(1024) NOT NULL,
-    title      VARCHAR(1024),
-    created_by INT           NOT NULL REFERENCES users (id),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    id         bigserial primary key,
+    url        varchar(1024) not null,
+    title      varchar(1024),
+    created_by bigint        not null REFERENCES users (id),
+    created_at timestamp with time zone default CURRENT_TIMESTAMP,
+    updated_at timestamp with time zone
 );
 
 CREATE TABLE tags
 (
-    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    name       VARCHAR(100) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    id         bigserial primary key,
+    name       varchar(100) not null,
+    created_at timestamp with time zone default CURRENT_TIMESTAMP,
+    updated_at timestamp with time zone,
     CONSTRAINT tag_name_unique UNIQUE (name)
 );
 
 CREATE TABLE bookmark_tag
 (
-    bookmark_id INT NOT NULL REFERENCES bookmarks (id),
-    tag_id      INT NOT NULL REFERENCES tags (id)
+    bookmark_id bigint not null REFERENCES bookmarks (id),
+    tag_id      bigint not null REFERENCES tags (id)
 );
+
+ALTER SEQUENCE user_preferences_id_seq RESTART WITH 101;
+ALTER SEQUENCE users_id_seq RESTART WITH 101;
+ALTER SEQUENCE bookmarks_id_seq RESTART WITH 101;
+ALTER SEQUENCE tags_id_seq RESTART WITH 101;

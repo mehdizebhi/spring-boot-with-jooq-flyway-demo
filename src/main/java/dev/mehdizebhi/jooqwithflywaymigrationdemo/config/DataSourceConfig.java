@@ -50,7 +50,7 @@ public class DataSourceConfig {
                 .withExecuteLogging(true);
 
         org.jooq.Configuration conf = new DefaultConfiguration()
-                .set(SQLDialect.MYSQL)
+                .set(SQLDialect.POSTGRES)
                 .set(new DataSourceConnectionProvider(dataSource))
                 .set(settings);
 
